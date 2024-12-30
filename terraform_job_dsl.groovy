@@ -1,6 +1,5 @@
 pipelineJob('terraform-aws-network') {
     description('Pipeline for managing AWS Network Infrastructure using Terraform')
-
     parameters {
         choiceParam('ACTION', ['apply', 'destroy'], 'Choose whether to apply or destroy the infrastructure')
         stringParam('GIT_URL', 'https://github.com/komalthakur853/Sprint-4-Terraform.git', 'Git repository URL')
@@ -8,7 +7,6 @@ pipelineJob('terraform-aws-network') {
         stringParam('TERRAFORM_DIR', '.', 'Directory containing Terraform files')
         stringParam('AWS_REGION', 'ap-south-1', 'AWS region to target')
     }
-
     definition {
         cpsScm {
             scm {
@@ -25,21 +23,21 @@ pipelineJob('terraform-aws-network') {
             scriptPath('Jenkinsfile')
         }
     }
-
     environmentVariables {
-        env('AWS_ACCESS_KEY_ID', 'AWS_ACCESS_KEY_ID') // Injecting AWS Access Key ID
-        env('AWS_SECRET_ACCESS_KEY', 'AWS_SECRET_ACCESS_KEY') // Injecting AWS Secret Access Key
+        env('AWS_ACCESS_KEY_ID', 'AWS_ACCESS_KEY_ID')
+        env('AWS_SECRET_ACCESS_KEY', 'AWS_SECRET_ACCESS_KEY')
         env('AWS_DEFAULT_REGION', '${AWS_REGION}')
         env('TERRAFORM_DIR', '${TERRAFORM_DIR}')
     }
-
     properties {
         disableConcurrentBuilds()
         buildDiscarder {
             strategy {
                 logRotator {
-                    numToKeepStr('10')    // Keep the latest 10 builds
-                    daysToKeepStr('30')   // Keep logs for the last 30 days
+                    numToKeepStr('10')
+                    daysToKeepStr('30')
+                    artifactNumToKeepStr('10')  
+                    artifactDaysToKeepStr('30')   
                 }
             }
         }
