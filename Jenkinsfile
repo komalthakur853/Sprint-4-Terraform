@@ -14,8 +14,8 @@ pipeline {
             steps {
                 checkout([$class: 'GitSCM', 
                     branches: [[name: '*/main']], 
-                    userRemoteConfigs: [[url: 'https://github.com/komalthakur853/AWS-Network.git']],
-                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'AWS-Network']]
+                    userRemoteConfigs: [[url: 'https://github.com/komalthakur853/Sprint-4-Terraform.git']],
+                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'Sprint-4-Terraform']]
                 ])
             }
         }
