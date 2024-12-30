@@ -1,4 +1,4 @@
-Job('terraform-aws-network') {
+pipelineJob('terraform-aws-network') {
     description('Pipeline for managing AWS Network Infrastructure using Terraform')
 
     parameters {
