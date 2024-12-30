@@ -1,4 +1,4 @@
-pipelineJob('terraform-aws-network') {
+Job('terraform-aws-network') {
     description('Pipeline for managing AWS Network Infrastructure using Terraform')
 
     parameters {
@@ -6,7 +6,7 @@ pipelineJob('terraform-aws-network') {
         stringParam('GIT_URL', 'https://github.com/komalthakur853/AWS-Network.git', 'Git repository URL')
         stringParam('BRANCH', '*/main', 'Git branch to checkout')
         stringParam('TERRAFORM_DIR', '.', 'Directory containing Terraform files')
-        stringParam('AWS_REGION', 'us-east-2', 'AWS region to target')
+        stringParam('AWS_REGION', 'ap-south-1', 'AWS region to target')
     }
 
     definition {
