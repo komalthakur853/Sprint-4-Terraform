@@ -38,8 +38,8 @@ pipelineJob('terraform-aws-network') {
         buildDiscarder {
             strategy {
                 logRotator {
-                    numToKeepStr('10')
-                    daysToKeepStr('30')
+                    numToKeepStr('10')    // Keep the latest 10 builds
+                    daysToKeepStr('30')   // Keep logs for the last 30 days
                 }
             }
         }
