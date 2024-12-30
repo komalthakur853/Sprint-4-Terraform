@@ -3,7 +3,7 @@ Job('terraform-aws-network') {
 
     parameters {
         choiceParam('ACTION', ['apply', 'destroy'], 'Choose whether to apply or destroy the infrastructure')
-        stringParam('GIT_URL', 'https://github.com/komalthakur853/AWS-Network.git', 'Git repository URL')
+        stringParam('GIT_URL', 'https://github.com/komalthakur853/Sprint-4-Terraform.git', 'Git repository URL')
         stringParam('BRANCH', '*/main', 'Git branch to checkout')
         stringParam('TERRAFORM_DIR', '.', 'Directory containing Terraform files')
         stringParam('AWS_REGION', 'ap-south-1', 'AWS region to target')
@@ -18,7 +18,7 @@ Job('terraform-aws-network') {
                     }
                     branch('${BRANCH}')
                     extensions {
-                        relativeTargetDirectory('AWS-Network')
+                        relativeTargetDirectory('Sprint-4-Terraform')
                     }
                 }
             }
