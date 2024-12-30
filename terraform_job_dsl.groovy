@@ -1,4 +1,4 @@
-pipelineJob('terraform-aws-network') {
+pipelineJob('Sprint-4-Terraform') {
     description('Pipeline for managing AWS Network Infrastructure using Terraform')
     parameters {
         choiceParam('ACTION', ['apply', 'destroy'], 'Choose whether to apply or destroy the infrastructure')
