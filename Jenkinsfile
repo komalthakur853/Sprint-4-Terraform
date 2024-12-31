@@ -42,7 +42,7 @@ pipeline {
 
         stage('Navigate to Terraform Directory') {
             steps {
-                dir(env.TERRAFORM_DIR) {
+                dir('AWS-Network') {
                     sh 'pwd'
                     sh 'ls -la'
                     sh 'cat main.tf || echo "main.tf not found"'
@@ -52,7 +52,7 @@ pipeline {
 
         stage('Initializing Terraform') {
             steps {
-                dir(env.TERRAFORM_DIR) {
+                dir('AWS-Network') {
                     sh 'terraform init || (echo "Terraform init failed"; exit 1)'
                 }
             }
@@ -68,7 +68,7 @@ pipeline {
 
         stage('Validating Terraform') {
             steps {
-                dir(env.TERRAFORM_DIR) {
+                dir('AWS-Network') {
                     sh 'terraform validate || (echo "Terraform validation failed"; exit 1)'
                 }
             }
@@ -76,7 +76,7 @@ pipeline {
 
         stage('Previewing the Infra using Terraform') {
             steps {
-                dir(env.TERRAFORM_DIR) {
+                dir('AWS-Network') {
                     sh 'terraform plan -out=tfplan || (echo "Terraform plan failed"; exit 1)'
                 }
                 input(message: "Are you sure to proceed with applying the changes?", ok: "Apply")
@@ -88,7 +88,7 @@ pipeline {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                dir(env.TERRAFORM_DIR) {
+                dir('AWS-Network') {
                     sh 'terraform apply -auto-approve tfplan || (echo "Terraform apply failed"; exit 1)'
                 }
             }
@@ -100,7 +100,7 @@ pipeline {
             }
             steps {
                 input(message: "Do you want to destroy the infrastructure?", ok: "Destroy")
-                dir(env.TERRAFORM_DIR) {
+                dir('AWS-Network') {
                     sh 'terraform destroy -auto-approve || (echo "Terraform destroy failed"; exit 1)'
                 }
             }
