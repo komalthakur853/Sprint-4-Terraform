@@ -6,18 +6,18 @@ pipeline {
     }
 
     environment {
-        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_DEFAULT_REGION = "ap-south-1"
-        TERRAFORM_DIR = "AWS-Network"
+        AWS_DEFAULT_REGION    = "ap-south-1"
+        TERRAFORM_DIR         = "AWS-Network"
     }
 
     stages {
         stage('Checkout SCM') {
             steps {
                 checkout([
-                    $class: 'GitSCM', 
-                    branches: [[name: '*/main']], 
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
                     userRemoteConfigs: [[url: 'https://github.com/komalthakur853/Sprint-4-Terraform.git']],
                     extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "."]] // Fix directory structure
                 ])
@@ -62,10 +62,9 @@ pipeline {
             steps {
                 dir('AWS-Network') {
                     sh 'terraform fmt -check'
-                    catch (Exception e) 
-                            {
-                               error("Formatting failed: ${e.message}")
-                            }
+                    catch (Exception e) {
+                        error("Formatting failed: ${e.message}")
+                    }
                 }
             }
         }
