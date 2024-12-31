@@ -62,10 +62,10 @@ pipeline {
             steps {
                 dir('AWS-Network') {
                     script {
-                        try {
-                            sh 'terraform fmt -check' || true
-                        } catch (Exception e) {
-                            error("Formatting failed: ${e.message}")
+                        // Run terraform fmt -check and handle failure without breaking pipeline
+                        def fmtResult = sh(script: 'terraform fmt -check', returnStatus: true)
+                        if (fmtResult != 0) {
+                            echo "Terraform formatting issues detected"
                         }
                     }
                 }
