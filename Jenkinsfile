@@ -19,7 +19,7 @@ pipeline {
                     $class: 'GitSCM',
                     branches: [[name: '*/main']],
                     userRemoteConfigs: [[url: 'https://github.com/komalthakur853/Sprint-4-Terraform.git']],
-                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "."]] // Fix directory structure
+                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "."]] 
                 ])
             }
         }
