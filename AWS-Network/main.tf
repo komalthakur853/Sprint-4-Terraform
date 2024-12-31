@@ -1,10 +1,5 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++
 # Network Skeleton - Pratik Gondkar #################
-
-provider "aws" {
-  region = "ap-south-1"
-}
-
 # VPC
 
 resource "aws_vpc" "main" {
