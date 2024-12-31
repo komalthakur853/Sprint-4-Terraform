@@ -123,3 +123,23 @@ output "salary_launch_template" {
 output "salary-TG" {
   value = aws_lb_target_group.Dev-salary-TG.arn
 }
+
+##################################redis-sg##################################
+
+output "redis-sg" {
+  value = aws_security_group.redis-sg.id
+}
+
+
+##################################scylla-sg##################################
+
+output "scylla-db-sg" {
+  value = aws_security_group.scylla-db-sg.id
+}
+
+
+##################################postgresSql-sg##################################
+
+output "postgresSql-db-sg" {
+  value = aws_security_group.postgresSql-sg.id
+}
