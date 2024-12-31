@@ -62,6 +62,10 @@ pipeline {
             steps {
                 dir('AWS-Network') {
                     sh 'terraform fmt -check'
+                    catch (Exception e) 
+                            {
+                               error("Formatting failed: ${e.message}")
+                            }
                 }
             }
         }
