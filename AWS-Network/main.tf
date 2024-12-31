@@ -1,3 +1,9 @@
+# +++++++++++++++++++++++++++++++++++++++++++++++++++
+# Network Skeleton - Pratik Gondkar #################
+
+provider "aws" {
+  region = "ap-south-1"
+}
 
 # VPC
 
@@ -396,6 +402,7 @@ resource "aws_security_group" "SG_01" {
     to_port     = var.HTTP_port
     protocol    = var.protocol_tcp
     cidr_blocks = [var.sg_cidr_range]
+    description      = "Allow traffic from interner"
   }
   egress  {
     from_port   = var.allow_port
@@ -450,7 +457,7 @@ resource "aws_route53_record" "cname_record" {
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++
-# frontend setup 
+# frontend setup - Pritam Kondapratiwar #############
 # sg
 resource "aws_security_group" "frontend-sg" {
   vpc_id      = aws_vpc.main.id
@@ -545,9 +552,9 @@ resource "aws_autoscaling_policy" "frontend_autoscaling_policy" {
 }
 
 
-###################################
-# Setup Attendance App infra in dev env via terraform static code
-###################################
+##############################################################################
+# Setup Attendance App infra in dev env via terraform static code - Priyanshu #
+##############################################################################
 
 resource "aws_security_group" "attendance-sg" {
   vpc_id      = aws_vpc.main.id
@@ -569,6 +576,7 @@ resource "aws_security_group" "attendance-sg" {
     to_port     = 8080
     protocol    = "tcp"
     security_groups = [aws_security_group.frontend-sg.id]
+    description      = "Allow traffic from frontend on port 3000"
   }
   egress  {
     from_port   = 0
@@ -684,7 +692,7 @@ resource "aws_autoscaling_policy" "attendance_autoscaling_policy" {
 
 
 ###########################################################################################
-# Employee 
+# Employee - Radha Gondchor                                                       ##############
 ################################################################################################
 
 resource "aws_security_group" "Employee-sg" {
@@ -707,6 +715,7 @@ resource "aws_security_group" "Employee-sg" {
     to_port     = 8080
     protocol    = "tcp"
     security_groups = [aws_security_group.frontend-sg.id]
+    description      = "Allow traffic from frontend on port 3000"
   }
   egress  {
     from_port   = 0
@@ -823,7 +832,7 @@ resource "aws_autoscaling_policy" "Employee_autoscaling_policy" {
 
 
 ###########################################################################################
-# salary 
+# salary- Komal
 ################################################################################################
 
 resource "aws_security_group" "salary-sg" {
@@ -846,6 +855,7 @@ resource "aws_security_group" "salary-sg" {
     to_port     = 8080
     protocol    = "tcp"
     security_groups = [aws_security_group.frontend-sg.id]
+    description      = "Allow traffic from frontend on port 3000"
   }
   egress  {
     from_port   = 0
@@ -958,3 +968,200 @@ resource "aws_autoscaling_policy" "salary_autoscaling_policy" {
     target_value = 50.0
   }
 }
+
+
+
+########################################  Redis - Chander kant Soni #####################################
+
+resource "aws_security_group" "redis-sg" {
+  vpc_id      = aws_vpc.main.id
+  ingress  {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress  {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    security_groups = [aws_security_group.attendance-sg.id]
+    description      = "Allow traffic from attendance on port 8080"
+  }
+  egress  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress  {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    security_groups = [aws_security_group.Employee-sg.id]
+    description      = "Allow traffic from employee on port 8080"
+  }
+  egress  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress  {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    security_groups = [aws_security_group.salary-sg.id]
+    description      = "Allow traffic from salary on port 8080"
+  }
+  egress  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Dev-redis-sg"
+  }
+}
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++
+# EC2- Chander Kant Soni            #################
+
+
+resource "aws_instance" "redis_ec2" {
+  ami           = "ami-053b12d3152c0cc71" 
+  instance_type = "t2.micro"
+
+  subnet_id              = aws_subnet.dev_private_database_subnet.id
+  security_groups        = [aws_security_group.redis-sg.id]
+  associate_public_ip_address = false 
+
+  tags = {
+    Name = "Dev-redis-server"
+  }
+}
+
+###################################### scylla-db- Pritam ##############################
+
+resource "aws_security_group" "scylla-db-sg" {
+  vpc_id      = aws_vpc.main.id
+  ingress  {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress  {
+    from_port   = 9042
+    to_port     = 9042
+    protocol    = "tcp"
+    security_groups = [aws_security_group.Employee-sg.id]
+    description      = "Allow traffic from employee on port 8080"
+  }
+  egress  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress  {
+    from_port   = 9042
+    to_port     = 9042
+    protocol    = "tcp"
+    security_groups = [aws_security_group.salary-sg.id]
+    description      = "Allow traffic from salary on port 8080"
+  }
+  egress  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Dev-scylla-db-sg"
+  }
+}
+
+resource "aws_instance" "scylla_ec2" {
+  ami           = "ami-053b12d3152c0cc71" 
+  instance_type = "t3.medium"
+
+  subnet_id              = aws_subnet.dev_private_database_subnet.id
+  security_groups        = [aws_security_group.scylla-db-sg.id]
+  associate_public_ip_address = false 
+
+  tags = {
+    Name = "Dev-scylla-server"
+  }
+}
+
+
+############################################postgresSql - Radha #################################
+
+resource "aws_security_group" "postgresSql-sg" {
+  vpc_id      = aws_vpc.main.id
+  ingress  {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress  {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    security_groups = [aws_security_group.attendance-sg.id]
+    description      = "Allow traffic from attendance on port 8080"
+  }
+  egress  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Dev-postgresSql-sg"
+  }
+}
+
+resource "aws_instance" "postgresSql_ec2" {
+  ami           = "ami-053b12d3152c0cc71" 
+  instance_type = "t3.medium"
+
+  subnet_id              = aws_subnet.dev_private_database_subnet.id
+  security_groups        = [aws_security_group.postgresSql-sg.id]
+  associate_public_ip_address = false 
+
+  tags = {
+    Name = "Dev-postgresSql-server"
+  }
+}
+
