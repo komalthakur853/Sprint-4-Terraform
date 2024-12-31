@@ -19,7 +19,7 @@ pipeline {
                     $class: 'GitSCM', 
                     branches: [[name: '*/main']], 
                     userRemoteConfigs: [[url: 'https://github.com/komalthakur853/Sprint-4-Terraform.git']],
-                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${env.TERRAFORM_DIR}"]]
+                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "."]] // Fix directory structure
                 ])
             }
         }
@@ -53,15 +53,15 @@ pipeline {
         stage('Initializing Terraform') {
             steps {
                 dir('AWS-Network') {
-                    sh 'terraform init || (echo "Terraform init failed"; exit 1)'
+                    sh 'terraform init || (echo "Terraform initialization failed"; exit 1)'
                 }
             }
         }
 
         stage('Formatting Terraform Code') {
             steps {
-                dir(env.TERRAFORM_DIR) {
-                    sh 'terraform fmt -check || echo "Terraform fmt check failed"'
+                dir('AWS-Network') {
+                    sh 'terraform fmt -check'
                 }
             }
         }
@@ -69,7 +69,7 @@ pipeline {
         stage('Validating Terraform') {
             steps {
                 dir('AWS-Network') {
-                    sh 'terraform validate || (echo "Terraform validation failed"; exit 1)'
+                    sh 'terraform validate'
                 }
             }
         }
@@ -79,7 +79,6 @@ pipeline {
                 dir('AWS-Network') {
                     sh 'terraform plan -out=tfplan || (echo "Terraform plan failed"; exit 1)'
                 }
-                input(message: "Are you sure to proceed with applying the changes?", ok: "Apply")
             }
         }
 
@@ -89,7 +88,7 @@ pipeline {
             }
             steps {
                 dir('AWS-Network') {
-                    sh 'terraform apply -auto-approve tfplan || (echo "Terraform apply failed"; exit 1)'
+                    sh 'terraform apply -auto-approve tfplan'
                 }
             }
         }
@@ -99,9 +98,8 @@ pipeline {
                 expression { params.ACTION == 'destroy' }
             }
             steps {
-                input(message: "Do you want to destroy the infrastructure?", ok: "Destroy")
                 dir('AWS-Network') {
-                    sh 'terraform destroy -auto-approve || (echo "Terraform destroy failed"; exit 1)'
+                    sh 'terraform destroy -auto-approve'
                 }
             }
         }
@@ -110,12 +108,7 @@ pipeline {
     post {
         always {
             cleanWs()
-        }
-        failure {
-            echo 'The Pipeline failed :('
-        }
-        success {
-            echo 'The Pipeline completed successfully!'
+            echo "The Pipeline ${currentBuild.currentResult}"
         }
     }
 }
