@@ -5,7 +5,7 @@ output "vpc_id" {
 }
 
 output "subnet_ids" {
-  value       = [
+  value = [
     aws_subnet.dev_public_subnet_01.id,
     aws_subnet.dev_private_frontend_subnet.id,
     aws_subnet.dev_private_backend_subnet.id,
@@ -56,7 +56,7 @@ output "ALB_arn" {
 
 
 output "alb_dns_name" {
-  value = aws_lb.Ot-micro-ALB.dns_name
+  value       = aws_lb.Ot-micro-ALB.dns_name
   description = "The DNS name of the Application Load Balancer"
 }
 # target arn 
@@ -92,7 +92,7 @@ output "attendance_launch_template" {
 }
 
 output "attendance-TG" {
- value = aws_lb_target_group.Dev-Attendance-TG.arn 
+  value = aws_lb_target_group.Dev-Attendance-TG.arn
 }
 
 
@@ -103,11 +103,11 @@ output "Employee-sg" {
 }
 
 output "Employee_launch_template" {
- value = aws_launch_template.Employee-launch_template.id 
+  value = aws_launch_template.Employee-launch_template.id
 }
 
 output "Employee-TG" {
- value =  aws_lb_target_group.Dev-Employee-TG.arn
+  value = aws_lb_target_group.Dev-Employee-TG.arn
 }
 
 ##################################################salary###################################
@@ -117,29 +117,9 @@ output "salary-sg" {
 }
 
 output "salary_launch_template" {
- value = aws_launch_template.salary-launch_template.id 
+  value = aws_launch_template.salary-launch_template.id
 }
 
 output "salary-TG" {
   value = aws_lb_target_group.Dev-salary-TG.arn
-}
-
-##################################redis-sg##################################
-
-output "redis-sg" {
-  value = aws_security_group.redis-sg.id
-}
-
-
-##################################scylla-sg##################################
-
-output "scylla-db-sg" {
-  value = aws_security_group.scylla-db-sg.id
-}
-
-
-##################################postgresSql-sg##################################
-
-output "postgresSql-db-sg" {
-  value = aws_security_group.postgresSql-sg.id
 }
